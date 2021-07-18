@@ -50,10 +50,14 @@ public class KnockBack : MonoBehaviour
         switch (entityType)
         {
             case HitPoints.EntityType.Boar:
-                tf.GetComponent<Boar>().SwitchState(Boar.State.Walk_Toward);
+                Boar boar = tf.GetComponent<Boar>();
+                if (boar.state == Boar.State.KnockBack)
+                    boar.SwitchState(Boar.State.Walk_Away);
                 break;
             case HitPoints.EntityType.Draugr:
-                tf.GetComponent<Draugr>().SwitchState(Draugr.State.Walk_Toward);
+                Draugr draugr = tf.GetComponent<Draugr>();
+                if (draugr.state == Draugr.State.KnockBack)
+                    draugr.SwitchState(Draugr.State.Walk_Away);
                 break;
         }
     }

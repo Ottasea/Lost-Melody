@@ -31,9 +31,6 @@ public class Boar : MonoBehaviour
     const float duration_cancelRetreat_max = 3.0f;
     const float duration_die = 1.0f;
 
-    bool cr_hit = false;
-    bool cr_attack = false;
-
     float duration_cancelRetreat;
 
     float timer;
@@ -117,11 +114,6 @@ public class Boar : MonoBehaviour
     //========================|   IEnumerator - Attack()   |=================================================
     IEnumerator Attack()
     {
-        if (cr_attack)
-            StopCoroutine(Attack());
-
-        cr_attack = true;
-
         SwitchState(State.Attack);
 
         //-------------   While Loop - 1st half   -------------------------------------
@@ -159,8 +151,8 @@ public class Boar : MonoBehaviour
 
         //-------------   Finish   -------------------------------------
         SwitchState(State.Walk_Away);
-        cr_attack = false;
     }
+
 
     //========================|   SwitchState()   |=================================================
     public void SwitchState(State _state)
@@ -209,37 +201,43 @@ public class Boar : MonoBehaviour
         }
     }
 
-    //========================|   IEnumerator - Hit()   |=================================================
-    public IEnumerator Hit()
+
+    //========================|   Hit()   |=================================================
+    public void Hit()
     {
-        if (cr_hit)
-            StopCoroutine(Hit());
+        StopAllCoroutines();
+        StartCoroutine(Hit_Coroutine());
+    }
 
-        cr_hit = true;
 
+    //========================|   IEnumerator - Hit()   |=================================================
+    private IEnumerator Hit_Coroutine()
+    {
         SwitchState(State.Hit);
-        StopCoroutine(Attack());
 
         yield return new WaitForSeconds(duration_hit);
 
         if (state != State.Hit)
         {
-            Debug.Log("ERROR: state != State.Hit");
+            Debug.Log("ERROR: state != State.Hit, state == " + state);
             yield break;
         }
 
         SwitchState(State.Walk_Away);
-        cr_hit = false;
     }
 
-    //========================|   IEnumerator - Die()   |=================================================
-    public IEnumerator Die()
+
+    //========================|   Die()   |=================================================
+    public void Die()
     {
-        StopCoroutine(Hit());
-        StopCoroutine(Attack());
-        cr_hit = false;
-        cr_attack = false; 
-        
+        StopAllCoroutines();
+        StartCoroutine(Die_Coroutine());
+    }
+
+
+    //========================|   IEnumerator - Die_Coroutine()   |=================================================
+    private IEnumerator Die_Coroutine()
+    {
         Destroy(GetComponent<HitPoints>());
 
         SwitchState(State.Die);
@@ -255,6 +253,7 @@ public class Boar : MonoBehaviour
         Destroy(GetComponent<Audio_Boar>());
         Destroy(this);
     }
+
 
     //========================|   Victory()   |=================================================
     public void Victory()

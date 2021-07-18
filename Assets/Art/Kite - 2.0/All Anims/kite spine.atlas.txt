@@ -1,0 +1,109 @@
+kite spine.png
+size:1999,1923
+filter:Linear,Linear
+pma:true
+L fore arm updated
+bounds:540,56,457,879
+offsets:3,1,461,882
+rotate:90
+L forearm attack
+bounds:909,970,384,907
+offsets:5,5,391,913
+rotate:90
+L-shin
+bounds:978,1618,315,303
+offsets:1,1,317,305
+R arm/shoulder
+bounds:407,971,383,500
+offsets:2,45,394,563
+rotate:90
+R foot attack
+bounds:654,1650,271,322
+offsets:1,6,273,329
+rotate:90
+R forearm updated
+bounds:871,515,453,1126
+offsets:6,1,461,1129
+rotate:90
+R leg updated
+bounds:2,991,363,403
+offsets:1,2,365,407
+rotate:90
+R shin attack
+bounds:1295,1617,317,304
+offsets:1,1,319,306
+R-shin
+bounds:1614,1604,317,331
+offsets:1,1,319,333
+rotate:90
+guitar side
+bounds:2,1356,246,1817
+offsets:1,1,248,1819
+rotate:90
+head
+bounds:2,96,462,536
+offsets:1,1,488,538
+rotate:90
+head forward
+bounds:1421,2,511,527
+offsets:1,2,530,530
+rotate:90
+l-foot
+bounds:186,1715,466,206
+offsets:1,1,486,208
+neck updated
+bounds:2,1748,182,173
+offsets:1,2,187,176
+r forearm attack
+bounds:2,560,409,867
+offsets:7,27,419,896
+rotate:90
+
+kite spine_2.png
+size:1974,1574
+filter:Linear,Linear
+pma:true
+L arm/shoulder
+bounds:2,40,608,533
+offsets:1,40,610,574
+L fore arm push/drag
+bounds:845,1093,479,764
+offsets:3,3,485,768
+rotate:90
+R forearm push/drag
+bounds:1078,568,523,894
+offsets:1,2,527,897
+rotate:90
+R-foot
+bounds:2,1104,468,841
+offsets:1,1,488,844
+rotate:90
+chest
+bounds:612,2,564,1035
+offsets:57,1,622,1045
+rotate:90
+head attack
+bounds:2,586,516,536
+offsets:1,1,528,538
+rotate:90
+head death
+bounds:540,575,516,536
+offsets:1,1,528,538
+rotate:90
+
+kite spine_3.png
+size:1795,681
+filter:Linear,Linear
+pma:true
+guitar
+bounds:2,2,677,1791
+offsets:1,1,680,1793
+rotate:90
+
+kite spine_4.png
+size:1535,1707
+filter:Linear,Linear
+pma:true
+L-leg
+bounds:2,2,1531,1703
+offsets:3,27,1687,1731

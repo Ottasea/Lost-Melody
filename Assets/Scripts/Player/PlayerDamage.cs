@@ -5,11 +5,7 @@ using UnityEngine;
 public class PlayerDamage : MonoBehaviour
 {
     //==========================|   Variables   |===========================================
-    [SerializeField] Animator       anim;
     [SerializeField] Transform tf;
-
-    const string anim_hit = "Hit";
-    const string anim_die = "Die";
 
     const float duration_hit = 1.0f;
 
@@ -31,9 +27,13 @@ public class PlayerDamage : MonoBehaviour
     //==========================|   IEnumerator - GetHit()   |=========================================
     public IEnumerator GetHit(Vector3 origin)
     {
+        Debug.Log("GetHit() has been disabled due to a lack of a flinch animation");
+        yield break;
+        /*
         ///---------------   Before   ------------------------------
-        anim.SetTrigger(anim_hit);
-        anim.SetBool(Movement.anim_idle, false);
+        //anim.SetTrigger(anim_hit);
+        //anim.SetBool(Movement.anim_idle, false);
+        SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.)
         Movement.Instance.EnableDisable(false);
         Audio_Player.Instance.PlayClip_Damage(Audio_Player.DamageClip.Hit);
 
@@ -65,31 +65,22 @@ public class PlayerDamage : MonoBehaviour
             anim.SetLayerWeight(Attack_Melee.layer_fullBody, t);
             yield return null;
         }
+        */
     }
 
     //=======================|   IEnumerator - Die()   |========================================
-    public IEnumerator Die(Vector3 origin)
+    public void Die(Vector3 origin)
     {
-        ///---------------   Before   ------------------------------
-        anim.SetTrigger(anim_die);
-        anim.SetBool(Movement.anim_idle, false);
+        //---------------   Before   ------------------------------
+        SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.DEATH);
         Movement.Instance.EnableDisable(false);
 
         float x = origin.x - tf.position.x > 0 ? 1 : -1;
-        anim.transform.localScale = new Vector3(x, 1, 1);
+        SpineAnim_Player.Instance.SetDirection(x);
 
         Boar[] boars = FindObjectsOfType<Boar>();
         foreach (Boar b in boars)
             b.Victory();
-
-        ///---------------   Transition in   ------------------------------
-        float t = 0;
-        while (t < 1)
-        {
-            t += Time.deltaTime / duration_transitionIn;
-            anim.SetLayerWeight(Attack_Melee.layer_fullBody, t);
-            yield return null;
-        }
     }
 
 }

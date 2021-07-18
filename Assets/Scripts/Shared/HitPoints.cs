@@ -20,6 +20,8 @@ public class HitPoints : MonoBehaviour
     public Boar boar;
     public Draugr draugr;
 
+    public static HitPoints Instance_Player;
+
 
     //===================|   Start()   |=================================
     private void Start()
@@ -31,6 +33,7 @@ public class HitPoints : MonoBehaviour
         {
             case EntityType.Player:
                 hitPoints = hp_player;
+                Instance_Player = this;
                 break;
             case EntityType.Boar:
                 hitPoints = hp_boar;
@@ -50,7 +53,10 @@ public class HitPoints : MonoBehaviour
         hitPoints -= dmg;
 
         if (entityType == EntityType.Player)
+        {
             Healthbar.Instance.StartCoroutine(Healthbar.Instance.ReduceHealth(oldHp, hitPoints));
+            HealthRegen.Instance.JustGotHit();
+        }
 
         //------------   Hit anims, knockback   -----------------------------------
         if (hitPoints > 0)
@@ -61,7 +67,7 @@ public class HitPoints : MonoBehaviour
                     PlayerDamage.Instance.StartCoroutine(PlayerDamage.Instance.GetHit(pos));
                     break;
                 case EntityType.Boar:
-                    boar.StartCoroutine(boar.Hit());
+                    boar.Hit();
                     break;
                 case EntityType.Draugr:
                     draugr.StartCoroutine(draugr.Hit());
@@ -80,10 +86,10 @@ public class HitPoints : MonoBehaviour
             switch (entityType)
             {
                 case EntityType.Player:
-                    PlayerDamage.Instance.StartCoroutine(PlayerDamage.Instance.Die(pos));
+                    PlayerDamage.Instance.Die(pos);
                     break;
                 case EntityType.Boar:
-                    boar.StartCoroutine(boar.Die());
+                    boar.Die();
                     break;
                 case EntityType.Draugr:
                     draugr.StartCoroutine(draugr.Die());

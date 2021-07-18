@@ -45,11 +45,20 @@ public class Healthbar : MonoBehaviour
             float health = Mathf.Lerp(oldHealth, newHealth, t);
             float percentage = health / HitPoints.hp_player;
 
-            Image img = FindImage(percentage);
-            Sprite spr = FindSprite(percentage);
-
-            img.sprite = spr;
+            ShowPercentage(percentage);
         }
+    }
+
+
+    //==============================|   ShowPercentage()   |=============================================
+    public void ShowPercentage(float percent)
+    {
+        Image img = FindImage(percent);
+        Sprite spr = FindSprite(percent);
+
+        FillLowerImages(img);
+
+        img.sprite = spr;
     }
 
 
@@ -66,10 +75,35 @@ public class Healthbar : MonoBehaviour
             return one;
     }
 
+    //==============================|   LowerImagesAreFull()   |=============================================
+    private void FillLowerImages(Image img)
+    {
+        if (img == one)
+            return;
+        else if (img == two)
+            one.sprite = oneHundredpercent;
+        else if (img == three)
+        {
+            one.sprite = oneHundredpercent;
+            two.sprite = oneHundredpercent;
+        }    
+        else if (img == four)
+        {
+            one.sprite = oneHundredpercent;
+            two.sprite = oneHundredpercent;
+            three.sprite = oneHundredpercent;
+        }
+    }
+
 
     //==============================|   FindSprite()   |=============================================
     Sprite FindSprite(float percentage)
     {
+        //-----------   If we are at MAX health
+        if (percentage >= 1.0f)
+            return oneHundredpercent;
+
+        //-----------   Else, proceed as normal
         percentage *= 4.0f;
 
         float remainder = percentage % 1;

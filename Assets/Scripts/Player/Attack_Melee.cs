@@ -5,23 +5,17 @@ using UnityEngine;
 public class Attack_Melee : MonoBehaviour
 {
     //===============================|   Variables   |=====================================================
-    [SerializeField] Animator anim;
-
-    [SerializeField] LayerMask layer_hitPoints;
-
-    [System.NonSerialized] public Transform tf_dir;
-
     const string anim_attack1 = "Axe - Attack - 1";
     const string anim_attack2 = "Axe - Attack - 2";
     const string anim_attackHeavy_Charging = "Axe - Heavy - Charge";
     const string anim_attackHeavy = "Axe - Heavy";
 
-    const float duration_attackLight_recover = 0.4f;
-    const float duration_attackLight = 0.3f;
+    const float duration_attackLight_recover = 0.3f;
+    const float duration_attackLight = 0.4f;
     const float duration_attackHeavy = 1.7f;
 
     const float transition_in_attackHeavyCharge = 0.5f;
-    const float transition_middle_attachHeavy = 1.3f;
+    const float transition_middle_attachHeavy = 1.0f;
     const float transition_out_attackHeavy = 0.25f;
 
     public const int layer_upperBody = 1;
@@ -51,18 +45,17 @@ public class Attack_Melee : MonoBehaviour
         Instance = this;
     }
 
-    //===============================|   Start()   |=====================================================
-    private void Start()
-    {
-        anim.SetLayerWeight(layer_upperBody, 0.0f);
-        anim.SetLayerWeight(layer_fullBody, 0.0f);
-    }
-
     //===============================|   Update()   |=====================================================
     void Update()
     {
         if (Movement.canMove)
         {
+            if (Input.GetMouseButtonDown(0) && (Time.time - timeSinceLastLightAttack) > duration_attackLight)
+                StartCoroutine(Attack_Light());
+            else if (Input.GetMouseButtonDown(1))
+                StartCoroutine(Attack_Heavy(1.0f));
+
+            /*
             if (ClickManager.clickType == ClickManager.ClickType.leftDown)
             {
                 if (Movement.Instance.playerState == Movement.PlayerState.walking || Movement.Instance.playerState == Movement.PlayerState.sprinting)
@@ -81,7 +74,7 @@ public class Attack_Melee : MonoBehaviour
                     StartCoroutine(Attack_Light());
                 }
             }
-
+            */
         }
 
     }
@@ -94,11 +87,8 @@ public class Attack_Melee : MonoBehaviour
         float localTimeSinceLast = timeSinceLastLightAttack;
         attacking = true;
 
-        anim.SetLayerWeight(layer_upperBody, 1.0f);
-
         lastLightAttack = lastLightAttack == 2 ? 1 : 2;
-        anim.SetTrigger(lastLightAttack == 1 ? anim_attack1 : anim_attack2);
-        anim.SetBool(Movement.anim_idle, false);
+        SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.ATTACK_LIGHT);
 
         Audio_Player.Instance.PlayClip_Attack(Audio_Player.AttackClip.AttackLight);
 
@@ -112,18 +102,19 @@ public class Attack_Melee : MonoBehaviour
         //-------------------   After   --------------------------------
         if (timeSinceLastLightAttack == localTimeSinceLast)
         {
-            anim.SetBool(Movement.anim_idle, true);
-            anim.SetLayerWeight(layer_upperBody, 0.0f);
+            SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.IDLE);
             attacking = false;
         }
     }
 
+    /*
     //===============================|   IEnumerator - Attack_Heavy_Charge()   |=====================================================
     IEnumerator Attack_Heavy_Charge()
     {
         //-----------------------   Beginning   -------------------------------------
         anim.SetTrigger(anim_attackHeavy_Charging);
         anim.SetBool(Movement.anim_idle, false);
+        SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.ATTACK_HEAVY);
 
         attacking = false;
 
@@ -161,14 +152,13 @@ public class Attack_Melee : MonoBehaviour
             yield return null;
         }
     }
+    */
 
     //===============================|   IEnumerator - Attack_Heavy()   |=====================================================
     IEnumerator Attack_Heavy(float chargedAmount)
     {
         //-------------------   Begin   ---------------------------------
-        anim.SetBool(Movement.anim_idle, true);
-        anim.SetFloat(Movement.anim_speed, 0.0f);
-        anim.SetTrigger(anim_attackHeavy);
+        SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.ATTACK_HEAVY);
 
         Audio_Player.Instance.PlayClip_Attack(Audio_Player.AttackClip.AttackHeavy);
 
@@ -184,7 +174,6 @@ public class Attack_Melee : MonoBehaviour
         while (t < 1)
         {
             t += Time.deltaTime / transition_out_attackHeavy;
-            anim.SetLayerWeight(layer_fullBody, 1 - t);
             yield return null;
         }
 
@@ -196,8 +185,8 @@ public class Attack_Melee : MonoBehaviour
     //===============================|   Attack_Heavy_Stop()   |=====================================================
     private void Attack_Heavy_Stop()
     {
-        anim.SetBool(Movement.anim_idle, true);
-        anim.SetLayerWeight(layer_fullBody, 0.0f);
+        SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.IDLE);
+
         Movement.Instance.EnableDisable(true);
     }
 
@@ -205,7 +194,7 @@ public class Attack_Melee : MonoBehaviour
     //===============================|   ApplyDamage()   |=====================================================
     private void ApplyDamage(float dmg, float force, float range)
     {
-        Vector2 boxPos = new Vector2(transform.position.x + tf_dir.localScale.z* range, transform.position.y + 1.0f);
+        Vector2 boxPos = new Vector2(transform.position.x + SpineAnim_Player.dir * range, transform.position.y + 1.0f);
         Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(boxPos, range);
 
         foreach (Collider2D c in collider2Ds)
