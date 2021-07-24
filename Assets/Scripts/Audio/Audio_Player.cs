@@ -9,9 +9,10 @@ public class Audio_Player : MonoBehaviour
     Movement.PlayerState prevMoveState;
 
     [SerializeField] AudioSource audioSrc_movement;
-    [SerializeField] AudioSource audioSrc_Attack;
+    [SerializeField] AudioSource audioSrc_action;
+    [SerializeField] AudioSource audioSrc_vibe;
 
-    public enum AttackClip { AttackLight, AttackHeavy_Charge, AttackHeavy }
+    public enum ActionClip { AttackLight, AttackHeavy_Charge, AttackHeavy, Sonar, Horn }
     int attackLightIndex = 0;
     public enum DamageClip { Hit, Die }
     int hitIndex = 0;
@@ -48,10 +49,12 @@ public class Audio_Player : MonoBehaviour
                 audioSrc_movement.clip = AudioClips.Instance.walk;
                 audioSrc_movement.loop = true;
                 break;
+                /*
             case Movement.PlayerState.sprinting:
                 audioSrc_movement.clip = AudioClips.Instance.run;
                 audioSrc_movement.loop = true;
                 break;
+                */
             case Movement.PlayerState.jump:
                 audioSrc_movement.clip = AudioClips.Instance.jump;
                 audioSrc_movement.loop = false;
@@ -59,6 +62,9 @@ public class Audio_Player : MonoBehaviour
             case Movement.PlayerState.jump_land:
                 audioSrc_movement.clip = AudioClips.Instance.jump_land;
                 audioSrc_movement.loop = false;
+                break;
+            case Movement.PlayerState.pushing:
+                audioSrc_movement.clip = AudioClips.Instance.exertion;
                 break;
         }
 
@@ -69,27 +75,56 @@ public class Audio_Player : MonoBehaviour
     }
 
     //========================|   PlayClip_Attack()   |=======================================================
-    public void PlayClip_Attack(AttackClip clip)
+    public void PlayClip_Action(ActionClip clip)
     {
         switch(clip)
         {
-            case AttackClip.AttackLight:
-                audioSrc_Attack.clip = AudioClips.Instance.attacksLight[attackLightIndex];
+            case ActionClip.AttackLight:
+                audioSrc_action.clip = AudioClips.Instance.attacksLight[attackLightIndex];
                 attackLightIndex++;
                 if (attackLightIndex >= AudioClips.Instance.attacksLight.Length)
                     attackLightIndex = 0;
                 break;
-            case AttackClip.AttackHeavy_Charge:
-                audioSrc_Attack.clip = AudioClips.Instance.attackHeavy_Charge;
+            case ActionClip.AttackHeavy_Charge:
+                audioSrc_action.clip = AudioClips.Instance.attackHeavy_Charge;
                 audioSrc_movement.Stop();
                 break;
-            case AttackClip.AttackHeavy:
-                audioSrc_Attack.clip = AudioClips.Instance.attackHeavy;
+            case ActionClip.AttackHeavy:
+                audioSrc_action.clip = AudioClips.Instance.attackHeavy;
+                break;
+            case ActionClip.Sonar:
+                audioSrc_action.clip = AudioClips.Instance.ability_sonar;
+                break;
+            case ActionClip.Horn:
+                audioSrc_action.clip = AudioClips.Instance.ability_horn;
                 break;
         }
 
-        audioSrc_Attack.Play();
+        audioSrc_action.Play();
     }
+
+    public void PlayClip_VibeChange(VibeSystem.Vibe vibe)
+    {
+        AudioClip clip = null;
+        switch (vibe)
+        {
+            case VibeSystem.Vibe.Red:
+                clip = AudioClips.Instance.vibe_red;
+                break;
+            case VibeSystem.Vibe.Blue:
+                clip = AudioClips.Instance.vibe_blue;
+                break;
+            case VibeSystem.Vibe.Green:
+                clip = AudioClips.Instance.vibe_green;
+                break;
+            case VibeSystem.Vibe.Yellow:
+                clip = AudioClips.Instance.vibe_yellow;
+                break;
+        }
+        audioSrc_vibe.clip = clip;
+        audioSrc_vibe.Play();
+    }
+
 
     //========================|   PlayClip_Damage()   |=======================================================
     public void PlayClip_Damage(DamageClip clip)
@@ -97,17 +132,17 @@ public class Audio_Player : MonoBehaviour
         switch (clip)
         {
             case DamageClip.Hit:
-                audioSrc_Attack.clip = AudioClips.Instance.hitVocals[hitIndex];
+                audioSrc_action.clip = AudioClips.Instance.hitVocals[hitIndex];
                 hitIndex++;
                 if (hitIndex >= AudioClips.Instance.hitVocals.Length)
                     hitIndex = 0;
                 break;
             case DamageClip.Die:
-                audioSrc_Attack.clip = AudioClips.Instance.die;
+                audioSrc_action.clip = AudioClips.Instance.die;
                 break;
         }
 
-        audioSrc_Attack.Play();
+        audioSrc_action.Play();
     }
 
 }

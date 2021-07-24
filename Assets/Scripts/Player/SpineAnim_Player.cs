@@ -23,6 +23,10 @@ public class SpineAnim_Player : MonoBehaviour
     [Header("Damage")]
     [SerializeField] AnimationReferenceAsset death;
 
+    [Header("PushPull")]
+    [SerializeField] AnimationReferenceAsset push;
+    [SerializeField] AnimationReferenceAsset pull;
+
     public enum RefAsset { IDLE, RUN, JUMP, JUMP_LAND, ATTACK_LIGHT, ATTACK_HEAVY, DEATH, PUSH, PULL };
     public static RefAsset prevAsset;
 
@@ -78,6 +82,14 @@ public class SpineAnim_Player : MonoBehaviour
                 refAss = death;
                 loop = false;
                 break;
+            case RefAsset.PUSH:
+                refAss = push;
+                loop = true;
+                break;
+            case RefAsset.PULL:
+                refAss = pull;
+                loop = true;
+                break;
         }
 
         if (refAss != null)
@@ -86,10 +98,41 @@ public class SpineAnim_Player : MonoBehaviour
             Debug.Log("RefAss == null, for: " + refAsset);
     }
 
+    //=========================|   ShouldMove()   |=======================================
+    public static bool IsMoving()
+    {
+        if (prevAsset == RefAsset.RUN)
+            return true;
+        else if (prevAsset == RefAsset.PUSH)
+            return true;
+        else if (prevAsset == RefAsset.PULL)
+            return true;
+
+        return false;
+    }
+
+    //=========================|   IsPerformingAction()   |=======================================
+    public static bool IsPerformingAction()
+    {
+        if (prevAsset == RefAsset.ATTACK_LIGHT || prevAsset == RefAsset.ATTACK_HEAVY)
+            return true;
+
+        return false;
+    }
+
+    //=========================|   IsPerformingAction()   |=======================================
+    public static bool IsJumping()
+    {
+        if (prevAsset == RefAsset.JUMP || prevAsset == RefAsset.JUMP_LAND)
+            return true;
+
+        return false;
+    }
+
     //=========================|   SetDirection()   |=======================================
     public void SetDirection(float x)
     {
-        if (x == 0 || Mathf.Abs(x) > 1.0f)
+        if (x == 0 || Mathf.Abs(x) != 1.0f)
             Debug.Log("WARNING: SetDirection() called with value of: " + x);
 
         tf.localScale = new Vector3(x * scaleX, 1, 1) * scale;
@@ -100,5 +143,11 @@ public class SpineAnim_Player : MonoBehaviour
     public void SetTimeScale(float ts)
     {
         skeletonAnimation.timeScale = ts;
+    }
+
+    //=========================|   CursorDirection()   |=======================================
+    public static float CursorDirectionRight()
+    {
+        return Input.mousePosition.x > Screen.width / 2 ? 1.0f : -1.0f;
     }
 }

@@ -11,6 +11,7 @@ public class AudioClips : MonoBehaviour
     public AudioClip run;
     public AudioClip jump;
     public AudioClip jump_land;
+    public AudioClip exertion;
 
     [Header("Attack")]
     public AudioClip[] attacksLight;
@@ -27,6 +28,20 @@ public class AudioClips : MonoBehaviour
     public AudioClip boar_hit;
     public AudioClip boar_die;
     public AudioClip boar_growl;
+
+    [Header("Abilities")]
+    public AudioClip ability_sonar;
+    public AudioClip ability_horn;
+
+    [Header("Vibe Changing")]
+    public AudioClip vibe_red;
+    public AudioClip vibe_green;
+    public AudioClip vibe_blue;
+    public AudioClip vibe_yellow;
+
+    [Header("Hits")]
+    public AudioClip hit_block;
+    public AudioClip hit_crit;
 
     public static AudioClips Instance;
 

@@ -15,7 +15,8 @@ public class Attack_Melee : MonoBehaviour
     const float duration_attackHeavy = 1.7f;
 
     const float transition_in_attackHeavyCharge = 0.5f;
-    const float transition_middle_attachHeavy = 1.0f;
+    const float transition_in_attackHeavy = 0.75f;
+    const float transition_middle_attachHeavy = 0.7f;
     const float transition_out_attackHeavy = 0.25f;
 
     public const int layer_upperBody = 1;
@@ -27,8 +28,8 @@ public class Attack_Melee : MonoBehaviour
     const float force_light = 1.0f;
     const float force_heavy = 2.0f;
 
-    const float range_light = 1.5f;
-    const float range_heavy = 2.0f;
+    const float range_light = 0.5f;
+    const float range_heavy = 0.67f;
 
     float timeSinceLastLightAttack;
 
@@ -89,8 +90,8 @@ public class Attack_Melee : MonoBehaviour
 
         lastLightAttack = lastLightAttack == 2 ? 1 : 2;
         SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.ATTACK_LIGHT);
-
-        Audio_Player.Instance.PlayClip_Attack(Audio_Player.AttackClip.AttackLight);
+        SpineAnim_Player.Instance.SetDirection(SpineAnim_Player.CursorDirectionRight());
+        Audio_Player.Instance.PlayClip_Action(Audio_Player.ActionClip.AttackLight);
 
         //-------------------   Middle   --------------------------------
         yield return new WaitForSeconds(duration_attackLight);
@@ -159,11 +160,12 @@ public class Attack_Melee : MonoBehaviour
     {
         //-------------------   Begin   ---------------------------------
         SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.ATTACK_HEAVY);
-
-        Audio_Player.Instance.PlayClip_Attack(Audio_Player.AttackClip.AttackHeavy);
+        SpineAnim_Player.Instance.SetDirection(SpineAnim_Player.CursorDirectionRight());
+        Audio_Player.Instance.PlayClip_Action(Audio_Player.ActionClip.AttackHeavy);
+        Movement.Instance.EnableDisable(false);
 
         //-------------------   Wait for Middle   ---------------------------------
-        yield return new WaitForSeconds(duration_attackHeavy - transition_out_attackHeavy - transition_middle_attachHeavy);
+        yield return new WaitForSeconds(transition_in_attackHeavy);
 
         ApplyDamage(dmg_heavy, chargedAmount * force_heavy, range_heavy);
 
@@ -200,7 +202,7 @@ public class Attack_Melee : MonoBehaviour
         foreach (Collider2D c in collider2Ds)
             if (c.GetComponent<HitPoints>())
                 if (c.tag != "Player")
-                    c.GetComponent<HitPoints>().Hit(dmg, transform.position, force);
+                    c.GetComponent<HitPoints>().Hit(dmg, transform.position, force, VibeSystem.ourVibe);
     }
 
 }

@@ -13,12 +13,14 @@ public class HitPoints : MonoBehaviour
     public Transform tf;
     [System.NonSerialized] public float hitPoints = 100;
 
-    public enum EntityType { Player, Boar, Draugr }
+    public enum EntityType { Player, Boar, Draugr, None }
     public EntityType entityType;
 
     [Header("Unit Specific")]
     public Boar boar;
     public Draugr draugr;
+
+    [SerializeField] Audio_Hit audioHit;
 
     public static HitPoints Instance_Player;
 
@@ -46,16 +48,30 @@ public class HitPoints : MonoBehaviour
 
 
     //===================|   ApplyDamage()   |=================================
-    public void Hit(float dmg, Vector3 pos = default, float force = 1)
+    public void Hit(float dmg, Vector3 pos = default, float force = 1, VibeSystem.Vibe vibe = VibeSystem.Vibe.NONE)
     {
         //------------   Reduce HitPoints   -----------------------------------
         float oldHp = hitPoints;
         hitPoints -= dmg;
+        bool crit = false;
 
         if (entityType == EntityType.Player)
         {
             Healthbar.Instance.StartCoroutine(Healthbar.Instance.ReduceHealth(oldHp, hitPoints));
             HealthRegen.Instance.JustGotHit();
+        }
+        else
+        {
+            if (vibe == VibeSystem.Vibe.NONE)
+                Debug.Log("MISTAKE: vibe argument not passed");
+
+            if (vibe == GetComponent<Enemies_Shared>().vibe)
+            {
+                crit = true;
+                dmg *= VibeSystem.vibeDmgMult;
+            }
+
+            Attack_NumbersPop.Instance.StartCoroutine(Attack_NumbersPop.Instance.PopNumbers(dmg, crit));
         }
 
         //------------   Hit anims, knockback   -----------------------------------
@@ -76,7 +92,7 @@ public class HitPoints : MonoBehaviour
 
             //------------   KnockBack   -----------------------------------
             if (pos != default)
-                KnockBack.Instance.StartCoroutine(KnockBack.Instance.Knock(tf, pos, force, entityType));
+                KnockBack.Instance.StartCoroutine(KnockBack.Instance.Knock(tf, pos, force, entityType, true));
             else
                 Debug.Log("not Knocking, pos: " + pos + ", tf: " + tf.name);
         }
@@ -95,10 +111,16 @@ public class HitPoints : MonoBehaviour
                     draugr.StartCoroutine(draugr.Die());
                     break;
                 default:
+                    Debug.Log("ERROR: Default EntityType");
                     Die();
                     break;
             }
+
+            crit = true;
         }
+
+        //------------   Hit SFX   -----------------------------------
+        audioHit.PlayHit(crit);
     }
 
 

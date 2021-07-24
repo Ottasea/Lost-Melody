@@ -19,7 +19,7 @@ public class KnockBack : MonoBehaviour
 
 
     //=====================|   IEnumerator - Knock()   |=====================================
-    public IEnumerator Knock(Transform tf, Vector3 from, float force, HitPoints.EntityType entityType)
+    public IEnumerator Knock(Transform tf, Vector3 from, float force, HitPoints.EntityType entityType, bool raycast)
     {
         //-----------------------   Start - SwitchState, Calculations   -------------------------------------
         ApplyKnockbackState(entityType, tf);
@@ -41,7 +41,8 @@ public class KnockBack : MonoBehaviour
 
             t -= Time.deltaTime / decel;
             tf.Translate(velocity * t * Time.deltaTime);
-            RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+
+            if (raycast)    RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
 
             yield return null;
         }

@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
     const string anim_jump_launch = "Jump - Start";
     const string anim_jump_land = "Jump - Land";
     const float duration_land = 0.35f;
-    public enum PlayerState { idle, walking, sprinting, jump, jump_land }
+    public enum PlayerState { idle, walking, pushing, jump, jump_land }
     [System.NonSerialized] public PlayerState playerState;
 
     public static Movement Instance;
@@ -62,47 +62,62 @@ public class Movement : MonoBehaviour
             velocity += Vector2.up * Physics.gravity.y * Time.deltaTime;
 
         //-----------------------   2 - Apply velocity   --------------------------------
-        tf.Translate(new Vector3(velocity.x, velocity.y, 0) * Time.deltaTime);
+        Vector3 translation = new Vector3(velocity.x, velocity.y, 0) * Time.deltaTime;
+        tf.Translate(translation);
 
+        //-----------------------   3 - PushPullMove, RaycastOnto2dTerrain   --------------------------------
         if (canMove)
+        {
+            PushPull.Instance.Move();
             RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+        }
     }
 
     //=========================|   Move()   |=======================================
     void Move()
     {
+        //---------------------  Get normalised x-value  --------------------------
         float x = Input.GetAxis("Horizontal");
-
-        if (x != prevX || SpineAnim_Player.prevAsset != SpineAnim_Player.RefAsset.RUN)
-        {
-            SpineAnim_Player.RefAsset idleOrRun = x == 0 ? SpineAnim_Player.RefAsset.IDLE : SpineAnim_Player.RefAsset.RUN;
-            SpineAnim_Player.Instance.SetAnimation(idleOrRun);
-            prevX = x;
-        }
-
         if (x != 0)
+            x /= Mathf.Abs(x);  // Have to do this before GetRunPushOrPull(), but can't do it if x == 0, or we divide by 0
+
+        //---------------------  Get animation  --------------------------
+        SpineAnim_Player.RefAsset idleRunPushPull;
+        if (x == 0 && !PushPull.isPushing)
+            idleRunPushPull = SpineAnim_Player.RefAsset.IDLE;
+        else
+            idleRunPushPull = PushPull.Instance.GetRunPushOrPull(x);
+
+        //---------------------  Set animation  --------------------------
+        if (SpineAnim_Player.prevAsset != idleRunPushPull && !SpineAnim_Player.IsPerformingAction())
+            SpineAnim_Player.Instance.SetAnimation(idleRunPushPull);
+
+        //---------------------  Set prevX  --------------------------
+        prevX = x;
+
+        //---------------------  Direction (art localScale), playerState & speed multiplication  ---------------------
+        if (idleRunPushPull == SpineAnim_Player.RefAsset.IDLE)
         {
-            x /= Mathf.Abs(x);
-            SpineAnim_Player.Instance.SetDirection(x);
-
-            /*
-            bool sprint = Input.GetKey(KeyCode.LeftShift) && x == SpineAnim_Player.dir && !Attack_Melee.Instance.attacking;
-
-            if (sprint)
-                x *= sprintMultiplier;
-
-            playerState = sprint ? PlayerState.sprinting : PlayerState.walking;
-            */
-            playerState = PlayerState.walking;
-
-            x *= speed * Time.deltaTime;
+            playerState = PlayerState.idle;
+            SpineAnim_Player.Instance.SetDirection(SpineAnim_Player.CursorDirectionRight());
         }
         else
         {
-            playerState = PlayerState.idle;
-            SpineAnim_Player.Instance.SetDirection(CursorDirectionRight());
+            if (idleRunPushPull == SpineAnim_Player.RefAsset.PUSH || idleRunPushPull == SpineAnim_Player.RefAsset.PULL)
+            {
+                SpineAnim_Player.Instance.SetDirection(PushPull.Instance.DirectionToPushedObj());
+                playerState = PlayerState.pushing;
+            }
+            else
+            {
+                SpineAnim_Player.Instance.SetDirection(x);
+                playerState = PlayerState.walking;
+            }
+
+            x *= speed * Time.deltaTime;
         }
 
+        //---------------------  Assign velocity  ---------------------
         velocity = new Vector2(x, velocity.y);
     }
 
@@ -139,6 +154,11 @@ public class Movement : MonoBehaviour
     public void EnableDisable(bool enableDisable)
     {
         canMove = enableDisable;
+
+        if (!enableDisable)
+            velocity = Vector2.zero;
+
+        /*
         playerState = PlayerState.idle;
 
         if (!enableDisable)
@@ -146,12 +166,7 @@ public class Movement : MonoBehaviour
             velocity = Vector2.zero;
             SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.IDLE);
         }
-    }
-
-    //=========================|   CursorDirection()   |=======================================
-    float CursorDirectionRight()
-    {
-        return Input.mousePosition.x > Screen.width / 2 ? 1.0f : -1.0f;
+        */
     }
 
 }
