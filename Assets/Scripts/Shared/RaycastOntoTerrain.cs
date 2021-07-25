@@ -9,7 +9,8 @@ public class RaycastOntoTerrain : MonoBehaviour
     static LayerMask terrainLayer_Static;
     const float distance = 20.0f;
     const float shotElevation = 10.0f;
-    const string layer_Walkable = "Walkable";
+    const float onGroundElevationLimit = Movement_LateralCollision.yOffset;
+    //const string layer_Walkable = "Walkable";
 
     public static RaycastOntoTerrain Instance;
 
@@ -23,14 +24,26 @@ public class RaycastOntoTerrain : MonoBehaviour
 
 
     //========================|   RaycastOnto2dTerrain()   |===============================================================
-    public static void RaycastOnto2dTerrain(Transform obj)
+    public static void RaycastOnto2dTerrain(Transform obj, float yOffset = 0.0f)
     {
         RaycastHit2D hit = Physics2D.Raycast(obj.position + Vector3.up * shotElevation, Vector2.down, distance, terrainLayer_Static);
 
+        if (!YDiffNotTooGreat(hit.point.y, obj.position.y))
+            return;
+
         if (hit.collider != null)
-            obj.position = hit.point;
+            obj.position = hit.point + Vector2.up * yOffset;
         else
             Debug.Log("RaycastHit2D hit.Collider == null");
+    }
+
+    //========================|   YDiffNotTooGreat()   |===============================================================
+    static bool YDiffNotTooGreat (float hitY, float tfY)
+    {
+        if (hitY - tfY < onGroundElevationLimit)
+            return true;
+        else
+            return false;
     }
 
     //========================|   RaycastOnto2dTerrain()   |===============================================================
@@ -39,7 +52,12 @@ public class RaycastOntoTerrain : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(obj.position, Vector2.down, range, terrainLayer_Static);
 
         if (hit)
-            return true;
+        {
+            if (YDiffNotTooGreat(hit.point.y, obj.position.y))
+                return true;
+            else
+                return false;
+        }
         else
             return false;
     }

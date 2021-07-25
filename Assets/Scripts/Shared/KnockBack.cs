@@ -60,6 +60,11 @@ public class KnockBack : MonoBehaviour
                 if (draugr.state == Draugr.State.KnockBack)
                     draugr.SwitchState(Draugr.State.Walk_Away);
                 break;
+            case HitPoints.EntityType.PolarBear:
+                PolarBear polarBear = tf.GetComponent<PolarBear>();
+                if (polarBear.state == PolarBear.State.KnockBack)
+                    polarBear.SwitchState(PolarBear.State.Walk_Away);
+                break;
         }
     }
 
@@ -78,6 +83,11 @@ public class KnockBack : MonoBehaviour
                 Draugr d = tf.GetComponent<Draugr>();
                 if (d.state != Draugr.State.Hit && d.state != Draugr.State.Die)
                     d.SwitchState(Draugr.State.KnockBack);
+                break;
+            case HitPoints.EntityType.PolarBear:
+                PolarBear p = tf.GetComponent<PolarBear>();
+                if (p.state != PolarBear.State.Hit && p.state != PolarBear.State.Die)
+                    p.SwitchState(PolarBear.State.KnockBack);
                 break;
         }
     }

@@ -57,8 +57,11 @@ public class PushPull : MonoBehaviour
     //==========================|   DirectionToPushedObj()   |======================================
     public float DirectionToPushedObj(Transform _pushedObj = null)
     {
+        if (pushedObj == null && _pushedObj == null)
+            Debug.Log("ERROR: no pushedObj");
+
         Transform tF = _pushedObj == null ? pushedObj : _pushedObj;
-        return tF.position.x > tF.position.x ? 1 : -1;
+        return tF.position.x >= transform.position.x ? 1 : -1;
     }
 
     //==========================|   Move()   |======================================
@@ -76,17 +79,17 @@ public class PushPull : MonoBehaviour
     {
         if (pushedObj != null)
         {
-            Debug.Log("return: pushedObj != null");
+            //Debug.Log("return: pushedObj != null");
             return;
         }
         else if (col.GetComponent<PushPullObj>() == null)
         {
-            Debug.Log("return: Component PushPullObj == null");
+            //Debug.Log("return: Component PushPullObj == null");
             return;
         }
         else if (SpineAnim_Player.IsJumping() || SpineAnim_Player.IsPerformingAction()) 
         {
-            Debug.Log("return: IsJumping() or IsPerformingAction()");
+            //Debug.Log("return: IsJumping() or IsPerformingAction()");
             return;
         }
 

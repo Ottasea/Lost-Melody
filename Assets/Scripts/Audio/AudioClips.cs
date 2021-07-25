@@ -29,6 +29,9 @@ public class AudioClips : MonoBehaviour
     public AudioClip boar_die;
     public AudioClip boar_growl;
 
+    [Header("Polar Bear")]
+    public AudioClip polarBear_roll;
+
     [Header("Abilities")]
     public AudioClip ability_sonar;
     public AudioClip ability_horn;

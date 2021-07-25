@@ -1,0 +1,57 @@
+skeleton.png
+size:1898,1846
+filter:Linear,Linear
+pma:true
+leg behind front
+bounds:1036,667,656,851
+offsets:43,1,700,853
+rotate:90
+leg front front
+bounds:1036,2,663,860
+offsets:44,1,708,862
+rotate:90
+leg front rear bend
+bounds:505,1325,519,1032
+offsets:34,1,562,1034
+rotate:90
+leg rear behind
+bounds:2,283,519,1032
+offsets:34,1,562,1034
+rotate:90
+leg rear behind bend
+bounds:2,804,519,1032
+offsets:34,1,562,1034
+rotate:90
+tail
+bounds:2,1605,501,239
+offsets:16,1,518,241
+
+skeleton_2.png
+size:1853,1677
+filter:Linear,Linear
+pma:true
+head dead
+bounds:1036,523,1152,815
+offsets:1,1,1156,817
+rotate:90
+head open
+bounds:2,2,1152,815
+offsets:1,1,1156,817
+rotate:90
+leg rear front
+bounds:2,1156,519,1032
+offsets:34,1,562,1034
+rotate:90
+
+skeleton_3.png
+size:1764,1277
+filter:Linear,Linear
+pma:true
+body
+bounds:2,2,1273,880
+offsets:1,208,1276,1094
+rotate:90
+head close
+bounds:884,20,1255,878
+offsets:1,1,1259,880
+rotate:90

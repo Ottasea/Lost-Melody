@@ -8,17 +8,19 @@ public class HitPoints : MonoBehaviour
     public const float hp_player = 50;
     public const float hp_boar = 50;
     public const float hp_draugr = 40;
+    public const float hp_polarBear = 300;
 
     [Header("Basic")]
     public Transform tf;
     [System.NonSerialized] public float hitPoints = 100;
 
-    public enum EntityType { Player, Boar, Draugr, None }
+    public enum EntityType { Player, Boar, Draugr, PolarBear, None }
     public EntityType entityType;
 
     [Header("Unit Specific")]
     public Boar boar;
     public Draugr draugr;
+    public PolarBear polarBear;
 
     [SerializeField] Audio_Hit audioHit;
 
@@ -42,6 +44,9 @@ public class HitPoints : MonoBehaviour
                 break;
             case EntityType.Draugr:
                 hitPoints = hp_draugr;
+                break;
+            case EntityType.PolarBear:
+                hitPoints = hp_polarBear;
                 break;
         }
     }
@@ -69,6 +74,7 @@ public class HitPoints : MonoBehaviour
             {
                 crit = true;
                 dmg *= VibeSystem.vibeDmgMult;
+                GetComponent<Enemies_Shared>().ChangeVibe();
             }
 
             Attack_NumbersPop.Instance.StartCoroutine(Attack_NumbersPop.Instance.PopNumbers(dmg, crit));
@@ -87,6 +93,9 @@ public class HitPoints : MonoBehaviour
                     break;
                 case EntityType.Draugr:
                     draugr.StartCoroutine(draugr.Hit());
+                    break;
+                case EntityType.PolarBear:
+                    polarBear.Hit();
                     break;
             }
 
@@ -109,6 +118,9 @@ public class HitPoints : MonoBehaviour
                     break;
                 case EntityType.Draugr:
                     draugr.StartCoroutine(draugr.Die());
+                    break;
+                case EntityType.PolarBear:
+                    polarBear.Die();
                     break;
                 default:
                     Debug.Log("ERROR: Default EntityType");

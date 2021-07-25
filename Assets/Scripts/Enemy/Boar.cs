@@ -4,21 +4,23 @@ using UnityEngine;
 public class Boar : MonoBehaviour
 {
     //========================|   Variables   |=================================================
-    [SerializeField] Animator anim;
     [SerializeField] Transform tf;
     [SerializeField] Audio_Boar audioScript;
+    [SerializeField] Enemies_Spine2D spine2d;
 
+    /*
     const string anim_walkTo    = "Walk To";
     const string anim_walkFrom  = "Walk From";
     const string anim_run       = "Run";
     const string anim_attack    = "Attack";
     const string anim_hit       = "Hit";
     const string anim_die       = "Die";
+    */
 
     [System.NonSerialized] public Transform enemy;
 
-    const float speed_walk  = 3.0f;
-    const float mult_run    = 2.0f;
+    const float speed_walk = 3.0f;
+    const float mult_run = 2.0f;
     const float mult_attack = 0.5f;
 
     const float distance_charge = 10.0f;
@@ -54,6 +56,9 @@ public class Boar : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+        
+        if (Vector3.Distance(enemy.position, transform.position) > Enemies_Shared.range)
+            return;
 
         //-------------   If walking or running   ----------------------
         if (state == State.Walk_Toward || state == State.Walk_Away || state == State.Run)
@@ -86,7 +91,7 @@ public class Boar : MonoBehaviour
         Vector3 heading = (enemy.position - tf.position).normalized;
 
         //-------------   Direction - Look   -------------------------------------
-        tf.localScale = new Vector3(heading.x, 1, 1);
+        tf.localScale = new Vector3(heading.x > 0 ? 1 : -1, 1, 1);
 
         //-------------   Direction or Margin   -------------------------------------
         if (state == State.Walk_Away)
@@ -162,31 +167,31 @@ public class Boar : MonoBehaviour
         switch (state)
         {
             case State.Walk_Toward:
-                anim.SetTrigger(anim_walkTo);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.WALK_TO);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.walk);
                 break;
             case State.Walk_Away:
-                anim.SetTrigger(anim_walkFrom);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.WALK_FROM);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.walk);
                 duration_cancelRetreat = Random.Range(duration_cancelRetreat_min, duration_cancelRetreat_max);
                 timer = 0;
                 break;
             case State.Run:
-                anim.SetTrigger(anim_run);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.RUN);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.run);
                 break;
             case State.Attack:
-                anim.SetTrigger(anim_attack);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.ATTACK);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.none);
                 audioScript.PlayVocal(Audio_Boar.ClipVocal.growl);
                 break;
             case State.Hit:
-                anim.SetTrigger(anim_hit);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.HIT);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.none);
                 audioScript.PlayVocal(Audio_Boar.ClipVocal.pain);
                 break;
             case State.Die:
-                anim.SetTrigger(anim_die);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.DEATH);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.none);
                 audioScript.PlayVocal(Audio_Boar.ClipVocal.die);
                 break;
@@ -195,7 +200,7 @@ public class Boar : MonoBehaviour
                 break;
             case State.KnockBack:
                 StopAllCoroutines();
-                anim.SetTrigger(anim_hit);
+                spine2d.SetAnimation(Enemies_Spine2D.RefAsset.HIT);
                 audioScript.PlayFootsteps(Audio_Boar.ClipSteps.none);
                 break;
         }
@@ -250,7 +255,7 @@ public class Boar : MonoBehaviour
             yield break;
         }
 
-        Destroy(GetComponent<Audio_Boar>());
+        Destroy(audioScript);
         Destroy(this);
     }
 

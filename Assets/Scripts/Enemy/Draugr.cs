@@ -65,6 +65,9 @@ public class Draugr : MonoBehaviour
     {
         timer += Time.deltaTime;
 
+        if (Vector3.Distance(enemy.position, transform.position) > Enemies_Shared.range)
+            return;
+
         //-------------   If walking or running   ----------------------
         if (state == State.Walk_Toward || state == State.Walk_Away || state == State.Run)
         {

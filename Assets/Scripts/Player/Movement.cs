@@ -6,8 +6,10 @@ public class Movement : MonoBehaviour
 {
     //=========================|   Variables   |=======================================
     const float speed = 2000;
-    const float jumpForce = 4;
+    const float jumpForce = 5;
     const float sprintMultiplier = 2.0f;
+
+    Vector3 spawnPos;
 
     [SerializeField] Transform tf;
 
@@ -38,21 +40,29 @@ public class Movement : MonoBehaviour
     //=========================|   Start()   |=======================================
     private void Start()
     {
-
+        spawnPos = tf.position;
     }
 
     //=========================|   Update()   |=======================================
     private void Update()
     {
-        //-----------------------   1A - Check if we are on the ground   --------------------------------
-        if (canMove)
-        {
-            //-----------------------   2 - Horizontal Movement   --------------------------------
-            Move();
+        //-----------------------   1 - Horizontal Movement   --------------------------------
+        Move();
 
+        if (tf.position.y < -5.0f)
+            tf.position = spawnPos;
+
+        //-----------------------   1A - Check if we are on the ground   --------------------------------
+        if (onGround)
+        {
             //-----------------------   3 - Jumping   --------------------------------
             if (Input.GetKeyDown(KeyCode.Space))
                 Jump_Launch();
+
+            if (!RaycastOntoTerrain.IsOnTerrain(tf, 1.0f))
+            {
+                onGround = false;
+            }
         }
         //-----------------------   1B - Check if we are on the ground   --------------------------------
         else if (!onGround && velocity.y < 0 && RaycastOntoTerrain.IsOnTerrain(tf, velocity.y * Time.deltaTime * 4.0f))
@@ -62,6 +72,9 @@ public class Movement : MonoBehaviour
             velocity += Vector2.up * Physics.gravity.y * Time.deltaTime;
 
         //-----------------------   2 - Apply velocity   --------------------------------
+        if (velocity.x != 0 && !Movement_LateralCollision.Instance.AllowMovement(velocity.x))
+            velocity = new Vector2(0, velocity.y);
+
         Vector3 translation = new Vector3(velocity.x, velocity.y, 0) * Time.deltaTime;
         tf.Translate(translation);
 
@@ -81,41 +94,45 @@ public class Movement : MonoBehaviour
         if (x != 0)
             x /= Mathf.Abs(x);  // Have to do this before GetRunPushOrPull(), but can't do it if x == 0, or we divide by 0
 
-        //---------------------  Get animation  --------------------------
-        SpineAnim_Player.RefAsset idleRunPushPull;
-        if (x == 0 && !PushPull.isPushing)
-            idleRunPushPull = SpineAnim_Player.RefAsset.IDLE;
-        else
-            idleRunPushPull = PushPull.Instance.GetRunPushOrPull(x);
-
-        //---------------------  Set animation  --------------------------
-        if (SpineAnim_Player.prevAsset != idleRunPushPull && !SpineAnim_Player.IsPerformingAction())
-            SpineAnim_Player.Instance.SetAnimation(idleRunPushPull);
-
-        //---------------------  Set prevX  --------------------------
-        prevX = x;
-
-        //---------------------  Direction (art localScale), playerState & speed multiplication  ---------------------
-        if (idleRunPushPull == SpineAnim_Player.RefAsset.IDLE)
+        if (playerState != PlayerState.jump && playerState != PlayerState.jump_land)
         {
-            playerState = PlayerState.idle;
-            SpineAnim_Player.Instance.SetDirection(SpineAnim_Player.CursorDirectionRight());
-        }
-        else
-        {
-            if (idleRunPushPull == SpineAnim_Player.RefAsset.PUSH || idleRunPushPull == SpineAnim_Player.RefAsset.PULL)
+            //---------------------  Get animation  --------------------------
+            SpineAnim_Player.RefAsset idleRunPushPull;
+
+            if (x == 0 && !PushPull.isPushing)
+                idleRunPushPull = SpineAnim_Player.RefAsset.IDLE;
+            else
+                idleRunPushPull = PushPull.Instance.GetRunPushOrPull(x);
+
+            //---------------------  Set animation  --------------------------
+            if (SpineAnim_Player.prevAsset != idleRunPushPull && !SpineAnim_Player.IsPerformingAction())
+                SpineAnim_Player.Instance.SetAnimation(idleRunPushPull);
+
+            //---------------------  Set prevX  --------------------------
+            prevX = x;
+
+            //---------------------  Direction (art localScale), playerState & speed multiplication  ---------------------
+            if (idleRunPushPull == SpineAnim_Player.RefAsset.IDLE)
             {
-                SpineAnim_Player.Instance.SetDirection(PushPull.Instance.DirectionToPushedObj());
-                playerState = PlayerState.pushing;
+                playerState = PlayerState.idle;
+                SpineAnim_Player.Instance.SetDirection(SpineAnim_Player.CursorDirectionRight());
             }
             else
             {
-                SpineAnim_Player.Instance.SetDirection(x);
-                playerState = PlayerState.walking;
+                if (idleRunPushPull == SpineAnim_Player.RefAsset.PUSH || idleRunPushPull == SpineAnim_Player.RefAsset.PULL)
+                {
+                    SpineAnim_Player.Instance.SetDirection(PushPull.Instance.DirectionToPushedObj());
+                    playerState = PlayerState.pushing;
+                }
+                else
+                {
+                    SpineAnim_Player.Instance.SetDirection(x);
+                    playerState = PlayerState.walking;
+                }
             }
-
-            x *= speed * Time.deltaTime;
         }
+
+        x *= speed * Time.deltaTime;
 
         //---------------------  Assign velocity  ---------------------
         velocity = new Vector2(x, velocity.y);
