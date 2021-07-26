@@ -6,8 +6,8 @@ public class Movement : MonoBehaviour
 {
     //=========================|   Variables   |=======================================
     const float speed = 2000;
-    const float jumpForce = 5;
-    const float sprintMultiplier = 2.0f;
+    const float jumpForce = 11;
+    //const float sprintMultiplier = 2.0f;
 
     Vector3 spawnPos;
 
@@ -59,21 +59,19 @@ public class Movement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
                 Jump_Launch();
 
+            /*
             if (!RaycastOntoTerrain.IsOnTerrain(tf, 1.0f))
             {
                 onGround = false;
             }
+            */
         }
         //-----------------------   1B - Check if we are on the ground   --------------------------------
-        else if (!onGround && velocity.y < 0 && RaycastOntoTerrain.IsOnTerrain(tf, velocity.y * Time.deltaTime * 4.0f))
+        else if (!onGround && velocity.y < 0/* && RaycastOntoTerrain.IsOnTerrain(tf, velocity.y * Time.deltaTime * 4.0f)*/)
             StartCoroutine(Jump_Land());
         //-----------------------   1C - Apply Gravity   --------------------------------
         else if (!onGround)
             velocity += Vector2.up * Physics.gravity.y * Time.deltaTime;
-
-        //-----------------------   2 - Apply velocity   --------------------------------
-        if (velocity.x != 0 && !Movement_LateralCollision.Instance.AllowMovement(velocity.x))
-            velocity = new Vector2(0, velocity.y);
 
         Vector3 translation = new Vector3(velocity.x, velocity.y, 0) * Time.deltaTime;
         tf.Translate(translation);
@@ -82,7 +80,7 @@ public class Movement : MonoBehaviour
         if (canMove)
         {
             PushPull.Instance.Move();
-            RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+           // RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
         }
     }
 
@@ -156,7 +154,7 @@ public class Movement : MonoBehaviour
         playerState = PlayerState.jump_land;
 
         velocity = Vector2.zero;
-        RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+        //RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
 
         yield return new WaitForSeconds(duration_land);
 

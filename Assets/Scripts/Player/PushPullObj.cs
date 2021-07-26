@@ -15,7 +15,7 @@ public class PushPullObj : MonoBehaviour
         //rb = GetComponent<Rigidbody2D>();
         //rb.isKinematic = true;
         col = GetComponent<Collider2D>();
-        col.isTrigger = true;
+        //col.isTrigger = true;
     }
 
     //=======================|   Update()   |========================================
@@ -29,7 +29,8 @@ public class PushPullObj : MonoBehaviour
     public void Activate()
     {
         //rb.isKinematic = false;
-        col.isTrigger = false;
+        col.enabled = false;
+        //col.isTrigger = false;
         pushed = true;
     }
 
@@ -37,7 +38,8 @@ public class PushPullObj : MonoBehaviour
     public void Deactivate()
     {
         //rb.isKinematic = true;
-        col.isTrigger = true;
+        col.enabled = true;
+        //col.isTrigger = true;
         pushed = false;
     }
 

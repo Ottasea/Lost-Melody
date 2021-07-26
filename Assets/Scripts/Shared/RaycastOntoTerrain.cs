@@ -9,7 +9,7 @@ public class RaycastOntoTerrain : MonoBehaviour
     static LayerMask terrainLayer_Static;
     const float distance = 20.0f;
     const float shotElevation = 10.0f;
-    const float onGroundElevationLimit = Movement_LateralCollision.yOffset;
+    //const float onGroundElevationLimit = 0,;
     //const string layer_Walkable = "Walkable";
 
     public static RaycastOntoTerrain Instance;
@@ -28,8 +28,10 @@ public class RaycastOntoTerrain : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(obj.position + Vector3.up * shotElevation, Vector2.down, distance, terrainLayer_Static);
 
+        /*
         if (!YDiffNotTooGreat(hit.point.y, obj.position.y))
             return;
+        */
 
         if (hit.collider != null)
             obj.position = hit.point + Vector2.up * yOffset;
@@ -37,6 +39,7 @@ public class RaycastOntoTerrain : MonoBehaviour
             Debug.Log("RaycastHit2D hit.Collider == null");
     }
 
+    /*
     //========================|   YDiffNotTooGreat()   |===============================================================
     static bool YDiffNotTooGreat (float hitY, float tfY)
     {
@@ -45,7 +48,9 @@ public class RaycastOntoTerrain : MonoBehaviour
         else
             return false;
     }
+    */
 
+    /*
     //========================|   RaycastOnto2dTerrain()   |===============================================================
     public static bool IsOnTerrain(Transform obj, float range)
     {
@@ -61,5 +66,5 @@ public class RaycastOntoTerrain : MonoBehaviour
         else
             return false;
     }
-
+    */
 }
