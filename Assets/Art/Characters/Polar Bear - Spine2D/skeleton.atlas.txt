@@ -1,57 +1,119 @@
 skeleton.png
-size:1898,1846
+size:4232,6532
 filter:Linear,Linear
 pma:true
-leg behind front
-bounds:1036,667,656,851
-offsets:43,1,700,853
+behind front foot
+bounds:2,6377,439,153
+offsets:1,1,441,155
+behind front foot bend
+bounds:2728,6019,340,350
+offsets:1,13,344,364
 rotate:90
-leg front front
-bounds:1036,2,663,860
-offsets:44,1,708,862
+behind front foot open
+bounds:881,6041,318,359
+offsets:1,1,320,361
 rotate:90
-leg front rear bend
-bounds:505,1325,519,1032
-offsets:34,1,562,1034
+behind front leg
+bounds:818,5583,456,643
+offsets:1,1,458,645
 rotate:90
-leg rear behind
-bounds:2,283,519,1032
-offsets:34,1,562,1034
+behind front shin
+bounds:1603,6022,337,573
+offsets:1,2,339,576
 rotate:90
-leg rear behind bend
-bounds:2,804,519,1032
-offsets:34,1,562,1034
+behind rear foot
+bounds:3611,6264,523,266
+offsets:1,1,526,268
+behind rear leg
+bounds:2108,5385,632,760
+offsets:9,2,642,764
 rotate:90
-tail
-bounds:2,1605,501,239
-offsets:16,1,518,241
+behind rear leg bended
+bounds:2,5593,447,814
+offsets:1,1,449,816
+rotate:90
+behind rear shin
+bounds:3080,5983,376,392
+offsets:1,1,379,395
+rotate:90
+body
+bounds:2,2669,1531,1408
+offsets:1,1,1533,1410
+fron rear shin
+bounds:3474,5886,376,390
+offsets:1,1,379,393
+rotate:90
+front front foot
+bounds:443,6377,439,153
+offsets:1,1,441,155
+front front foot bend
+bounds:527,6042,333,352
+offsets:1,2,343,355
+rotate:90
+front front foot open
+bounds:1242,6041,318,359
+offsets:1,1,320,361
+rotate:90
+front front leg
+bounds:1463,5564,456,643
+offsets:1,1,458,645
+rotate:90
+front front shin
+bounds:2178,6022,337,548
+offsets:1,1,339,550
+rotate:90
+front rear foot
+bounds:2,6109,523,266
+offsets:1,1,526,268
+front rear leg
+bounds:2870,5252,632,760
+offsets:9,2,642,764
+rotate:90
+head closed
+bounds:2,4180,754,1019
+offsets:1,1,795,1021
+rotate:90
+head dead
+bounds:2637,4572,754,678
+offsets:1,1,795,680
+head open
+bounds:3393,4572,754,678
+offsets:1,1,795,680
+hit effect 0
+bounds:884,6361,2725,169
+offsets:113,1,2839,174
+hit effect 1
+bounds:2,4936,2633,447
+offsets:5,1,2639,460
+hit effect 2
+bounds:2,1733,2838,934
+offsets:37,1,2876,954
+hit effect 3
+bounds:2842,444,2835,1388
+offsets:20,1,2856,1417
+rotate:90
+hit effect 5
+bounds:2,2,2837,1729
+offsets:33,1,2871,1765
+neck
+bounds:1023,4079,883,855
+offsets:1,1,885,857
+slash
+bounds:1908,3281,1307,1289
+offsets:1,1,1311,1292
 
 skeleton_2.png
-size:1853,1677
+size:3942,5322
 filter:Linear,Linear
 pma:true
-head dead
-bounds:1036,523,1152,815
-offsets:1,1,1156,817
+hit effect 4
+bounds:2,2,2836,2056
+offsets:25,1,2862,2099
 rotate:90
-head open
-bounds:2,2,1152,815
-offsets:1,1,1156,817
-rotate:90
-leg rear front
-bounds:2,1156,519,1032
-offsets:34,1,562,1034
-rotate:90
-
-skeleton_3.png
-size:1764,1277
-filter:Linear,Linear
-pma:true
-body
-bounds:2,2,1273,880
-offsets:1,208,1276,1094
-rotate:90
-head close
-bounds:884,20,1255,878
-offsets:1,1,1259,880
+hit effect 6
+bounds:2,2840,2720,2480
+offsets:124,1,2846,2482
+roll attack
+bounds:2060,847,1991,1880
+offsets:2,2,1995,1884
 rotate:90

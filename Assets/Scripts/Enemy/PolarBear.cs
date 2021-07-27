@@ -122,10 +122,15 @@ public class PolarBear : MonoBehaviour
 
         //-------------   Translate   -------------------------------------
         float x = heading.x * speed * Time.deltaTime;
+        Vector3 pos = tf.position;
         tf.Translate(x, 0, 0);
 
         //-------------   Raycast Onto Terrain   -------------------------------------
-        RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+        if (!RaycastOntoTerrain.RaycastOnto2dTerrain(tf))
+        {
+            tf.position = pos;
+            SwitchState(State.Walk_Toward);
+        }
     }
 
     //========================|   IEnumerator - Attack()   |=================================================
@@ -346,6 +351,8 @@ public class PolarBear : MonoBehaviour
         }
 
         Destroy(audioScript);
+        Destroy(GetComponent<Collider2D>());
+        Destroy(GetComponent<Enemies_Shared>());
         Destroy(this);
     }
 

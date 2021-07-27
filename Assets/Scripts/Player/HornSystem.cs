@@ -49,14 +49,14 @@ public class HornSystem : MonoBehaviour
             HitPoints.EntityType entityType = HitPoints.EntityType.None;
             bool raycast = false;
 
-            if (c.GetComponent<HitPoints>() && c.gameObject.tag != tag_player)
+            if (c.GetComponent<HitPoints>() != null && c.gameObject.tag != tag_player)
             {
                 HitPoints hp = c.GetComponent<HitPoints>();
                 tf = hp.tf;
                 entityType = hp.entityType;
                 raycast = true;
             }
-            else if (c.GetComponent<Rigidbody2D>())
+            else if (c.GetComponent<PushPullObj>())
                 tf = c.transform;
 
             if (tf != null)
@@ -67,7 +67,6 @@ public class HornSystem : MonoBehaviour
                     float force = hornForce / div;
                     KnockBack.Instance.StartCoroutine(KnockBack.Instance.Knock(tf, transform.position, force, entityType, raycast));
                 }
-
             }
         }
             

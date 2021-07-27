@@ -24,7 +24,7 @@ public class RaycastOntoTerrain : MonoBehaviour
 
 
     //========================|   RaycastOnto2dTerrain()   |===============================================================
-    public static void RaycastOnto2dTerrain(Transform obj, float yOffset = 0.0f)
+    public static bool RaycastOnto2dTerrain(Transform obj, float yOffset = 0.0f)
     {
         RaycastHit2D hit = Physics2D.Raycast(obj.position + Vector3.up * shotElevation, Vector2.down, distance, terrainLayer_Static);
 
@@ -34,9 +34,15 @@ public class RaycastOntoTerrain : MonoBehaviour
         */
 
         if (hit.collider != null)
+        {
             obj.position = hit.point + Vector2.up * yOffset;
+            return true;
+        }
         else
+        {
             Debug.Log("RaycastHit2D hit.Collider == null");
+            return false;
+        }
     }
 
     /*

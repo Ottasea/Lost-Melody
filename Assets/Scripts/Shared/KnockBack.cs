@@ -42,7 +42,8 @@ public class KnockBack : MonoBehaviour
             t -= Time.deltaTime / decel;
             tf.Translate(velocity * t * Time.deltaTime);
 
-            if (raycast)    RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+            if (raycast)    
+                RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
 
             yield return null;
         }

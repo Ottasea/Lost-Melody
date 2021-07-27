@@ -49,9 +49,6 @@ public class Movement : MonoBehaviour
         //-----------------------   1 - Horizontal Movement   --------------------------------
         Move();
 
-        if (tf.position.y < -5.0f)
-            tf.position = spawnPos;
-
         //-----------------------   1A - Check if we are on the ground   --------------------------------
         if (onGround)
         {
@@ -154,7 +151,6 @@ public class Movement : MonoBehaviour
         playerState = PlayerState.jump_land;
 
         velocity = Vector2.zero;
-        //RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
 
         yield return new WaitForSeconds(duration_land);
 
@@ -182,6 +178,12 @@ public class Movement : MonoBehaviour
             SpineAnim_Player.Instance.SetAnimation(SpineAnim_Player.RefAsset.IDLE);
         }
         */
+    }
+
+    //=========================|   Respawn()   |=======================================
+    public void Respawn()
+    {
+        tf.position = spawnPos;
     }
 
 }

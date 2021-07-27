@@ -117,10 +117,15 @@ public class Draugr : MonoBehaviour
 
         //-------------   Translate   -------------------------------------
         float x = heading.x * speed * Time.deltaTime;
+        Vector3 pos = tf.position;
         tf.Translate(x, 0, 0);
 
         //-------------   Raycast Onto Terrain   -------------------------------------
-        RaycastOntoTerrain.RaycastOnto2dTerrain(tf);
+        if (!RaycastOntoTerrain.RaycastOnto2dTerrain(tf))
+        {
+            tf.position = pos;
+            SwitchState(State.Walk_Toward);
+        }
     }
 
 
@@ -217,8 +222,8 @@ public class Draugr : MonoBehaviour
             case State.Die:
                 anim.SetTrigger(anim_die);
                 anim.SetLayerWeight(layer_full, 1);
-                //audioScript.PlayFootsteps(Audio_Boar.ClipSteps.none);
-                //audioScript.PlayVocal(Audio_Boar.ClipVocal.die);
+                GetComponent<BoxCollider2D>().enabled = false;
+                GetComponent<Enemies_Shared>().enabled = false;
                 break;
             case State.Victory:
                 Debug.Log("Draugr has no victory state");
