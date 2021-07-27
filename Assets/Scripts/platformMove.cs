@@ -38,18 +38,11 @@ public class platformMove : MonoBehaviour
         Gizmos.DrawLine(pos1.position, pos2.position);
     }
 
-    void OnTriggerEnter2D (Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            canMove = true;
-        }
-    }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            canMove = true;
             collision.collider.transform.SetParent(transform);
         }
     }
